@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evelyn Partners - How Can We Help?</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== EVELYN PARTNERS BRAND COLORS ===== */
+        :root {
+            --jaguar: #11011B;
+            --twine: #C69D64;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --border-gray: #E0E0E0;
+            --text-gray: #666666;
+            --error-red: #D32F2F;
+            --success-green: #388E3C;
+        }
+
+        /* ===== GLOBAL STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--jaguar) 0%, #1a0a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+            color: var(--jaguar);
+        }
+
+        /* ===== CHATBOT CONTAINER ===== */
+        .chatbot-container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== HEADER ===== */
+        .chatbot-header {
+            background: var(--jaguar);
+            color: var(--white);
+            padding: 24px;
+            text-align: center;
+            border-bottom: 3px solid var(--twine);
+        }
+
+        .chatbot-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .chatbot-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* ===== CHAT BODY ===== */
+        .chatbot-body {
+            padding: 32px 24px;
+            max-height: 600px;
+            overflow-y: auto;
+            background: var(--light-gray);
+        }
+
+        .chatbot-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chatbot-body::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+
+        .chatbot-body::-webkit-scrollbar-thumb {
+            background: var(--twine);
+            border-radius: 4px;
+        }
+
+        /* ===== MESSAGES ===== */
+        .message {
+            margin-bottom: 24px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-content {
+            background: var(--white);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--twine);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .message-content h2 {
+            font-size: 18px;
+            color: var(--jaguar);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .message-content p {
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== BUTTONS ===== */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 16px 24px;
+            border: 2px solid var(--twine);
+            background: var(--white);
+            color: var(--jaguar);
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn i {
+            color: var(--twine);
+            font-size: 18px;
+            min-width: 20px;
+        }
+
+        .btn:hover {
+            background: var(--twine);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(198, 157, 100, 0.3);
+        }
+
+        .btn:hover i {
+            color: var(--white);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--twine);
+            color: var(--white);
+            border-color: var(--twine);
+        }
+
+        .btn-primary i {
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--jaguar);
+            border-color: var(--jaguar);
+        }
+
+        .btn-secondary {
+            background: var(--jaguar);
+            color: var(--white);
+            border-color: var(--jaguar);
+        }
+
+        .btn-secondary i {
+            color: var(--twine);
+        }
+
+        .btn-secondary:hover {
+            background: var(--twine);
+            border-color: var(--twine);
+        }
+
+        .btn-back {
+            background: var(--light-gray);
+            border-color: var(--border-gray);
+            color: var(--text-gray);
+            font-size: 14px;
+            padding: 12px 20px;
+        }
+
+        .btn-back:hover {
+            background: var(--border-gray);
+            border-color: var(--text-gray);
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--jaguar);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--twine);
+            box-shadow: 0 0 0 3px rgba(198, 157, 100, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2311011B' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 6px;
+            color: var(--text-gray);
+            font-size: 13px;
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: var(--error-red);
+        }
+
+        /* ===== RADIO BUTTONS ===== */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            border-color: var(--twine);
+            background: rgba(198, 157, 100, 0.05);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--twine);
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        /* ===== LOADING SPINNER ===== */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid var(--light-gray);
+            border-top: 3px solid var(--twine);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== SUCCESS MESSAGE ===== */
+        .success-message {
+            background: var(--success-green);
+            color: var(--white);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        .success-message i {
+            font-size: 24px;
+        }
+
+        /* ===== INFO BOX ===== */
+        .info-box {
+            background: rgba(198, 157, 100, 0.1);
+            border-left: 4px solid var(--twine);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .info-box h3 {
+            color: var(--jaguar);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .info-box ul {
+            margin: 12px 0 0 20px;
+            color: var(--text-gray);
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        /* ===== CALENDLY EMBED ===== */
+        .calendly-container {
+            margin-top: 20px;
+            min-height: 500px;
+        }
+
+        /* ===== HIDDEN CLASS ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .chatbot-container {
+                border-radius: 0;
+                height: 100vh;
+            }
+
+            .chatbot-header h1 {
+                font-size: 20px;
+            }
+
+            .chatbot-body {
+                max-height: calc(100vh - 140px);
+                padding: 24px 16px;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 14px 20px;
+            }
+        }
+
+        /* ===== PROGRESS INDICATOR ===== */
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border-gray);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--twine);
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: var(--success-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <h1>Evelyn Partners</h1>
+            <p>Welcome. How can we help you today?</p>
+        </div>
+        
+        <div class="progress-indicator hidden" id="progressIndicator">
+            <div class="progress-dot active" data-step="1"></div>
+            <div class="progress-dot" data-step="2"></div>
+            <div class="progress-dot" data-step="3"></div>
+            <div class="progress-dot" data-step="4"></div>
+        </div>
+
+        <div class="chatbot-body" id="chatbotBody">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Calendly embed script -->
+    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const CONFIG = {
+            // Replace with your actual n8n webhook URLs
+            webhooks: {
+                existingClient: 'https://your-n8n-instance.com/webhook/existing-client',
+                prospectiveClient: 'https://your-n8n-instance.com/webhook/prospective-client',
+                careers: 'https://your-n8n-instance.com/webhook/careers',
+                press: 'https://your-n8n-instance.com/webhook/press',
+                general: 'https://your-n8n-instance.com/webhook/general',
+                inheritance: 'https://your-n8n-instance.com/webhook/inheritance'
+            },
+            // Investment threshold for CAT routing
+            catThreshold: 250000,
+            // Calendly URL (replace with your actual Calendly link)
+            calendlyUrl: 'https://calendly.com/your-team/consultation'
+        };
+
+        // ===== STATE MANAGEMENT =====
+        const state = {
+            currentStep: 'welcome',
+            userData: {},
+            history: []
+        };
+
+        // ===== UTILITY FUNCTIONS =====
+        function scrollToBottom() {
+            const chatBody = document.getElementById('chatbotBody');
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function updateProgress(step, total) {
+            const indicator = document.getElementById('progressIndicator');
+            const dots = indicator.querySelectorAll('.progress-dot');
+            
+            if (step > 0) {
+                indicator.classList.remove('hidden');
+            } else {
+                indicator.classList.add('hidden');
+                return;
+            }
+
+            dots.forEach((dot, index) => {
+                if (index < step - 1) {
+                    dot.classList.add('completed');
+                    dot.classList.remove('active');
+                } else if (index === step - 1) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else {
+                    dot.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        function clearChatBody() {
+            const chatBody = document.getElementById('chatbotBody');
+            chatBody.innerHTML = '';
+        }
+
+        function showLoading(message = 'Processing your request...') {
+            const chatBody = document.getElementById('chatbotBody');
+            const loadingHTML = `
+                <div class="loading show">
+                    <div class="spinner"></div>
+                    <p>${message}</p>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', loadingHTML);
+            scrollToBottom();
+        }
+
+        function hideLoading() {
+            const loading = document.querySelector('.loading');
+            if (loading) {
+                loading.remove();
+            }
+        }
+
+        function showSuccess(message) {
+            const chatBody = document.getElementById('chatbotBody');
+            const successHTML = `
+                <div class="success-message show">
+                    <i class="fas fa-check-circle"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', successHTML);
+            scrollToBottom();
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePhone(phone) {
+            const re = /^[\d\s\+\-\(\)]+$/;
+            return re.test(phone) && phone.replace(/\D/g, '').length >= 10;
+        }
+
+        function validateRequired(value) {
+            return value && value.trim().length > 0;
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-GB', {
+                style: 'currency',
+                currency: 'GBP',
+                minimumFractionDigits: 0
+            }).format(value);
+        }
+
+        // ===== API FUNCTIONS =====
+        async function sendToN8N(webhook, data) {
+            try {
+                const response = await fetch(webhook, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        timestamp: new Date().toISOString(),
+                        sessionId: getSessionId()
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error sending to n8n:', error);
+                // In production, you might want to show an error message to the user
+                // For demo purposes, we'll just log it
+                return { success: true }; // Mock success for demo
+            }
+        }
+
+        function getSessionId() {
+            let sessionId = sessionStorage.getItem('chatbot_session_id');
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('chatbot_session_id', sessionId);
+            }
+            return sessionId;
+        }
+
+        // ===== RENDERING FUNCTIONS =====
+        function renderMessage(content) {
+            const chatBody = document.getElementById('chatbotBody');
+            const messageHTML = `
+                <div class="message">
+                    <div class="message-content">
+                        ${content}
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', messageHTML);
+            scrollToBottom();
+        }
+
+        function renderButtons(buttons) {
+            let buttonsHTML = '<div class="button-group">';
+            buttons.forEach(button => {
+                const btnClass = button.class || 'btn';
+                const icon = button.icon || 'fa-arrow-right';
+                buttonsHTML += `
+                    <button class="${btnClass}" onclick="${button.action}">
+                        <i class="fas ${icon}"></i>
+                        <span>${button.text}</span>
+                    </button>
+                `;
+            });
+            buttonsHTML += '</div>';
+            renderMessage(buttonsHTML);
+        }
+
+        function renderForm(fields, submitAction, backAction = null) {
+            let formHTML = '<form id="dynamicForm" onsubmit="return false;">';
+            
+            fields.forEach(field => {
+                formHTML += '<div class="form-group">';
+                formHTML += `<label for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>`;
+                
+                if (field.type === 'select') {
+                    formHTML += `<select id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''}>`;
+                    formHTML += '<option value="">Please select...</option>';
+                    field.options.forEach(option => {
+                        formHTML += `<option value="${option.value}">${option.label}</option>`;
+                    });
+                    formHTML += '</select>';
+                } else if (field.type === 'textarea') {
+                    formHTML += `<textarea id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''} placeholder="${field.placeholder || ''}"></textarea>`;
+                } else if (field.type === 'radio') {
+                    formHTML += '<div class="radio-group">';
+                    field.options.forEach((option, index) => {
+                        formHTML += `
+                            <div class="radio-option">
+                                <input type="radio" id="${field.name}_${index}" name="${field.name}" value="${option.value}" ${field.required ? 'required' : ''}>
+                                <label for="${field.name}_${index}">${option.label}</label>
+                            </div>
+                        `;
+                    });
+                    formHTML += '</div>';
+                } else {
+                    formHTML += `<input type="${field.type}" id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''} placeholder="${field.placeholder || ''}">`;
+                }
+                
+                if (field.hint) {
+                    formHTML += `<small>${field.hint}</small>`;
+                }
+                formHTML += `<span class="error-message" id="${field.name}_error"></span>`;
+                formHTML += '</div>';
+            });
+
+            formHTML += '<div class="button-group">';
+            formHTML += `<button type="button" class="btn btn-primary" onclick="${submitAction}"><i class="fas fa-paper-plane"></i><span>Submit</span></button>`;
+            if (backAction) {
+                formHTML += `<button type="button" class="btn btn-back" onclick="${backAction}"><i class="fas fa-arrow-left"></i><span>Back</span></button>`;
+            }
+            formHTML += '</div>';
+            formHTML += '</form>';
+            
+            renderMessage(formHTML);
+        }
+
+        function getFormData() {
+            const form = document.getElementById('dynamicForm');
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            return data;
+        }
+
+        function validateForm(validations) {
+            let isValid = true;
+            
+            for (let field in validations) {
+                const input = document.getElementById(field);
+                const errorSpan = document.getElementById(`${field}_error`);
+                const formGroup = input.closest('.form-group');
+                const value = input.value.trim();
+                
+                // Clear previous errors
+                formGroup.classList.remove('error');
+                errorSpan.classList.remove('show');
+                errorSpan.textContent = '';
+                
+                // Run validation
+                const validation = validations[field];
+                if (validation.required && !value) {
+                    isValid = false;
+                    formGroup.classList.add('error');
+                    errorSpan.textContent = `${validation.label} is required`;
+                    errorSpan.classList.add('show');
+                    continue;
+                }
+                
+                if (value && validation.type === 'email' && !validateEmail(value)) {
+                    isValid = false;
+                    formGroup.classList.add('error');
+                    errorSpan.textContent = 'Please enter a valid email address';
+                    errorSpan.classList.add('show');
+                }
+                
+                if (value && validation.type === 'phone' && !validatePhone(value)) {
+                    isValid = false;
+                    formGroup.classList.add('error');
+                    errorSpan.textContent = 'Please enter a valid phone number';
+                    errorSpan.classList.add('show');
+                }
+                
+                if (value && validation.min && parseFloat(value) < validation.min) {
+                    isValid = false;
+                    formGroup.classList.add('error');
+                    errorSpan.textContent = `Minimum value is ${validation.min}`;
+                    errorSpan.classList.add('show');
+                }
+            }
+            
+            return isValid;
+        }
+
+        // ===== SCREEN FUNCTIONS =====
+        
+        // Welcome Screen
+        function showWelcome() {
+            clearChatBody();
+            updateProgress(0, 4);
+            state.currentStep = 'welcome';
+            
+            renderMessage(`
+                <h2>Welcome to Evelyn Partners</h2>
+                <p>We're here to help. Please select the option that best describes your enquiry:</p>
+            `);
+            
+            renderButtons([
+                {
+                    text: "I'm an Existing Client",
+                    action: "handleExistingClient()",
+                    icon: "fa-user-check"
+                },
+                {
+                    text: "I'm Interested in Becoming a Client",
+                    action: "handleProspectiveClient()",
+                    icon: "fa-handshake"
+                },
+                {
+                    text: "I'm Interested in Working with You",
+                    action: "handleCareers()",
+                    icon: "fa-briefcase"
+                },
+                {
+                    text: "I have a Press Enquiry",
+                    action: "handlePress()",
+                    icon: "fa-newspaper"
+                },
+                {
+                    text: "I have a General or Corporate Enquiry",
+                    action: "handleGeneral()",
+                    icon: "fa-question-circle"
+                }
+            ]);
+        }
+
+        // BRANCH 1: Existing Client
+        function handleExistingClient() {
+            clearChatBody();
+            updateProgress(1, 4);
+            state.currentStep = 'existing-client';
+            state.userData.enquiryType = 'existing-client';
+            
+            renderMessage(`
+                <h2>Welcome Back</h2>
+                <p>We're pleased to assist you. Please provide your details so we can direct you to the right person.</p>
+            `);
+            
+            renderForm([
+                {
+                    name: 'name',
+                    label: 'Full Name',
+                    type: 'text',
+                    required: true,
+                    placeholder: 'John Smith'
+                },
+                {
+                    name: 'email',
+                    label: 'Email Address',
+                    type: 'email',
+                    required: true,
+                    placeholder: 'john.smith@example.com'
+                },
+                {
+                    name: 'phone',
+                    label: 'Phone Number',
+                    type: 'tel',
+                    required: false,
+                    placeholder: '+44 20 1234 5678'
+                },
+                {
+                    name: 'enquiryNature',
+                    label: 'Nature of Enquiry',
+                    type: 'select',
+                    required: true,
+                    options: [
+                        { value: 'speak-to-advisor', label: 'Speak to My Advisor' },
+                        { value: 'account-support', label: 'Account Support' },
+                        { value: 'technical-issue', label: 'Technical Issue' },
+                        { value: 'update-details', label: 'Update My Details' },
+                        { value: 'inheritance', label: 'Inheritance/Executor Matter' },
+                        { value: 'other', label: 'Other' }
+                    ]
+                }
+            ], 'submitExistingClient()', 'showWelcome()');
+        }
+
+        function submitExistingClient() {
+            const validations = {
+                name: { required: true, label: 'Name' },
+                email: { required: true, type: 'email', label: 'Email' },
+                phone: { required: false, type: 'phone', label: 'Phone' },
+                enquiryNature: { required: true, label: 'Nature of enquiry' }
+            };
+            
+            if (!validateForm(validations)) {
+                return;
+            }
+            
+            const formData = getFormData();
+            Object.assign(state.userData, formData);
+            
+            // Check if inheritance/executor matter
+            if (formData.enquiryNature === 'inheritance') {
+                handleInheritance();
+                return;
+            }
+            
+            showLoading('Connecting you to our team...');
+            
+            sendToN8N(CONFIG.webhooks.existingClient, state.userData).then(() => {
+                hideLoading();
+                showFinalMessage('existing-client');
+            });
+        }
+
+        // BRANCH 2: Prospective Client
+        function handleProspectiveClient() {
+            clearChatBody();
+            updateProgress(1, 4);
+            state.currentStep = 'prospective-client';
+            state.userData.enquiryType = 'prospective-client';
+            
+            renderMessage(`
+                <h2>Welcome</h2>
+                <p>Thank you for your interest in Evelyn Partners. We'd love to learn more about your needs.</p>
+            `);
+            
+            renderForm([
+                {
+                    name: 'name',
+                    label: 'Full Name',
+                    type: 'text',
+                    required: true,
+                    placeholder: 'Jane Doe'
+                },
+                {
+                    name: 'email',
+                    label: 'Email Address',
+                    type: 'email',
+                    required: true,
+                    placeholder: 'jane.doe@example.com'
+                },
+                {
+                    name: 'phone',
+                    label: 'Phone Number',
+                    type: 'tel',
+                    required: false,
+                    placeholder: '+44 20 1234 5678'
+                },
+                {
+                    name: 'investmentValue',
+                    label: 'Approximate Investment Value',
+                    type: 'select',
+                    required: true,
+                    options: [
+                        { value: 'under-100k', label: 'Under £100,000' },
+                        { value: '100k-250k', label: '£100,000 - £250,000' },
+                        { value: '250k-500k', label: '£250,000 - £500,000' },
+                        { value: '500k-1m', label: '£500,000 - £1,000,000' },
+                        { value: 'over-1m', label: 'Over £1,000,000' },
+                        { value: 'not-sure', label: 'I\'m not sure' }
+                    ],
+                    hint: 'This helps us match you with the right service'
+                }
+            ], 'submitProspectiveClient()', 'showWelcome()');
+        }
+
+        function submitProspectiveClient() {
+            const validations = {
+                name: { required: true, label: 'Name' },
+                email: { required: true, type: 'email', label: 'Email' },
+                phone: { required: false, type: 'phone', label: 'Phone' },
+                investmentValue: { required: true, label: 'Investment value' }
+            };
+            
+            if (!validateForm(validations)) {
+                return;
+            }
+            
+            const formData = getFormData();
+            Object.assign(state.userData, formData);
+            
+            updateProgress(2, 4);
+            
+            // Determine routing based on investment value
+            const highValueRanges = ['250k-500k', '500k-1m', 'over-1m'];
+            const isHighValue = highValueRanges.includes(formData.investmentValue);
+            
+            state.userData.routeTo = isHighValue ? 'CAT' : 'general-services';
+            
+            askContactPreference(isHighValue);
+        }
+
+        function askContactPreference(isHighValue) {
+            renderMessage(`
+                <h2>How Would You Like Us to Contact You?</h2>
+                <p>${isHighValue ? 
+                    'Based on your investment value, we\'ll connect you with our Centralized Relationship Team who specialize in comprehensive wealth management.' :
+                    'We\'d be happy to discuss how our services can help you achieve your financial goals.'
+                }</p>
+            `);
+            
+            renderForm([
+                {
+                    name: 'contactMethod',
+                    label: 'Preferred Contact Method',
+                    type: 'radio',
+                    required: true,
+                    options: [
+                        { value: 'email', label: 'Email me with information' },
+                        { value: 'call', label: 'Call me to discuss' },
+                        { value: 'schedule', label: 'Schedule a meeting' }
+                    ]
+                }
+            ], 'submitContactPreference()', 'handleProspectiveClient()');
+        }
+
+        function submitContactPreference() {
+            const validations = {
+                contactMethod: { required: true, label: 'Contact method' }
+            };
+            
+            if (!validateForm(validations)) {
+                return;
+            }
+            
+            const formData = getFormData();
+            Object.assign(state.userData, formData);
+            
+            if (formData.contactMethod === 'schedule') {
+                showCalendly();
+            } else {
+                showLoading('Submitting your information...');
+                sendToN8N(CONFIG.webhooks.prospectiveClient, state.userData).then(() => {
+                    hideLoading();
+                    showFinalMessage('prospective-client');
+                });
+            }
+        }
+
+        function showCalendly() {
+            updateProgress(3, 4);
+            clearChatBody();
+            
+            renderMessage(`
+                <h2>Schedule Your Consultation</h2>
+                <p>Please select a convenient time for your consultation with our team.</p>
+            `);
+            
+            renderMessage(`
+                <div class="calendly-container" id="calendlyEmbed"></div>
+            `);
+            
+            // Send data to n8n before showing Calendly
+            sendToN8N(CONFIG.webhooks.prospectiveClient, state.userData);
+            
+            // Initialize Calendly
+            Calendly.initInlineWidget({
+                url: CONFIG.calendlyUrl,
+                parentElement: document.getElementById('calendlyEmbed'),
+                prefill: {
+                    name: state.userData.name,
+                    email: state.userData.email
+                }
+            });
+            
+            setTimeout(() => {
+                renderMessage(`
+                    <div class="info-box">
+                        <h3>What happens next?</h3>
+                        <p>After booking, you'll receive a confirmation email with meeting details and a calendar invitation.</p>
+                    </div>
+                `);
+                
+                renderButtons([
+                    {
+                        text: "I've scheduled my meeting",
+                        action: "confirmScheduled()",
+                        class: "btn btn-primary",
+                        icon: "fa-check"
+                    },
+                    {
+                        text: "Back",
+                        action: "askContactPreference(" + (state.userData.routeTo === 'CAT') + ")",
+                        class: "btn btn-back",
+                        icon: "fa-arrow-left"
+                    }
+                ]);
+            }, 1000);
+        }
+
+        function confirmScheduled() {
+            state.userData.meetingScheduled = true;
+            showFinalMessage('prospective-client-scheduled');
+        }
+
+        // BRANCH 3: Careers
+        function handleCareers() {
+            clearChatBody();
+            updateProgress(1, 4);
+            state.currentStep = 'careers';
+            state.userData.enquiryType = 'careers';
+            
+            renderMessage(`
+                <h2>Join Our Team</h2>
+                <p>We're always looking for talented individuals to join Evelyn Partners. Learn about our opportunities:</p>
+            `);
+            
+            renderMessage(`
+                <div class="info-box">
+                    <h3>Career Opportunities</h3>
+                    <ul>
+                        <li><strong>Regional Manager Programme:</strong> Leadership development for experienced professionals</li>
+                        <li><strong>Advisor Roles:</strong> Client-facing positions across wealth management and financial planning</li>
+                        <li><strong>Support Functions:</strong> Operations, technology, marketing, and corporate services</li>
+                        <li><strong>Graduate Schemes:</strong> Structured programmes for recent graduates</li>
+                    </ul>
+                </div>
+            `);
+            
+            renderForm([
+                {
+                    name: 'name',
+                    label: 'Full Name',
+                    type: 'text',
+                    required: true,
+                    placeholder: 'Your name'
+                },
+                {
+                    name: 'email',
+                    label: 'Email Address',
+                    type: 'email',
+                    required: true,
+                    placeholder: 'your.email@example.com'
+                },
+                {
+                    name: 'phone',
+                    label: 'Phone Number',
+                    type: 'tel',
+                    required: false,
+                    placeholder: '+44 20 1234 5678'
+                },
+                {
+                    name: 'interestArea',
+                    label: 'Area of Interest',
+                    type: 'select',
+                    required: true,
+                    options: [
+                        { value: 'regional-manager', label: 'Regional Manager Programme' },
+                        { value: 'advisor', label: 'Advisor Roles' },
+                        { value: 'support', label: 'Support Functions' },
+                        { value: 'graduate', label: 'Graduate Schemes' },
+                        { value: 'general', label: 'General Interest' }
+                    ]
+                },
+                {
+                    name: 'message',
+                    label: 'Tell us about yourself',
+                    type: 'textarea',
+                    required: false,
+                    placeholder: 'Brief overview of your experience and why you\'re interested...'
+                }
+            ], 'submitCareers()', 'showWelcome()');
+        }
+
+        function submitCareers() {
+            const validations = {
+                name: { required: true, label: 'Name' },
+                email: { required: true, type: 'email', label: 'Email' },
+                phone: { required: false, type: 'phone', label: 'Phone' },
+                interestArea: { required: true, label: 'Area of interest' }
+            };
+            
+            if (!validateForm(validations)) {
+                return;
+            }
+            
+            const formData = getFormData();
+            Object.assign(state.userData, formData);
+            
+            showLoading('Submitting your information...');
+            
+            sendToN8N(CONFIG.webhooks.careers, state.userData).then(() => {
+                hideLoading();
+                showFinalMessage('careers');
+            });
+        }
+
+        // BRANCH 4: Press
+        function handlePress() {
+            clearChatBody();
+            updateProgress(1, 4);
+            state.currentStep = 'press';
+            state.userData.enquiryType = 'press';
+            
+            renderMessage(`
+                <h2>Press Enquiry</h2>
+                <p>Thank you for your interest in Evelyn Partners. Please provide your details and we'll connect you with our press team.</p>
+            `);
+            
+            renderForm([
+                {
+                    name: 'name',
+                    label: 'Full Name',
+                    type: 'text',
+                    required: true,
+                    placeholder: 'Your name'
+                },
+                {
+                    name: 'email',
+                    label: 'Email Address',
+                    type: 'email',
+                    required: true,
+                    placeholder: 'your.email@publication.com'
+                },
+                {
+                    name: 'organization',
+                    label: 'Publication/Organization',
+                    type: 'text',
+                    required: true,
+                    placeholder: 'Your publication or organization'
+                },
+                {
+                    name: 'phone',
+                    label: 'Phone Number',
+                    type: 'tel',
+                    required: false,
+                    placeholder: '+44 20 1234 5678'
+                },
+                {
+                    name: 'enquiryDetails',
+                    label: 'Nature of Enquiry',
+                    type: 'textarea',
+                    required: true,
+                    placeholder: 'Please describe your press enquiry...'
+                }
+            ], 'submitPress()', 'showWelcome()');
+        }
+
+        function submitPress() {
+            const validations = {
+                name: { required: true, label: 'Name' },
+                email: { required: true, type: 'email', label: 'Email' },
+                organization: { required: true, label: 'Organization' },
+                phone: { required: false, type: 'phone', label: 'Phone' },
+                enquiryDetails: { required: true, label: 'Enquiry details' }
+            };
+            
+            if (!validateForm(validations)) {
+                return;
+            }
+            
+            const formData = getFormData();
+            Object.assign(state.userData, formData);
+            
+            showLoading('Routing to our press team...');
+            
+            sendToN8N(CONFIG.webhooks.press, state.userData).then(() => {
+                hideLoading();
+                showFinalMessage('press');
+            });
+        }
+
+        // BRANCH 5: General/Corporate
+        function handleGeneral() {
+            clearChatBody();
+            updateProgress(1, 4);
+            state.currentStep = 'general';
+            state.userData.enquiryType = 'general';
+            
+            renderMessage(`
+                <h2>General or Corporate Enquiry</h2>
+                <p>Please provide your details and the nature of your enquiry. We'll ensure it reaches the right team.</p>
+            `);
+            
+            renderForm([
+                {
+                    name: 'name',
+                    label: 'Full Name',
+                    type: 'text',
+                    required: true,
+                    placeholder: 'Your name'
+                },
+                {
+                    name: 'email',
+                    label: 'Email Address',
+                    type: 'email',
+                    required: true,
+                    placeholder: 'your.email@example.com'
+                },
+                {
+                    name: 'phone',
+                    label: 'Phone Number',
+                    type: 'tel',
+                    required: false,
+                    placeholder: '+44 20 1234 5678'
+                },
+                {
+                    name: 'company',
+                    label: 'Company (if applicable)',
+                    type: 'text',
+                    required: false,
+                    placeholder: 'Your company name'
+                },
+                {
+                    name: 'enquiryType',
+                    label: 'Type of Enquiry',
+                    type: 'select',
+                    required: true,
+                    options: [
+                        { value: 'partnership', label: 'Partnership Opportunity' },
+                        { value: 'corporate-services', label: 'Corporate Services' },
+                        { value: 'complaint', label: 'Complaint' },
+                        { value: 'feedback', label: 'Feedback' },
+                        { value: 'other', label: 'Other' }
+                    ]
+                },
+                {
+                    name: 'enquiryDetails',
+                    label: 'Details of Your Enquiry',
+                    type: 'textarea',
+                    required: true,
+                    placeholder: 'Please provide details about your enquiry...'
+                }
+            ], 'submitGeneral()', 'showWelcome()');
+        }
+
+        function submitGeneral() {
+            const validations = {
+                name: { required: true, label: 'Name' },
+                email: { required: true, type: 'email', label: 'Email' },
+                phone: { required: false, type: 'phone', label: 'Phone' },
+                enquiryType: { required: true, label: 'Enquiry type' },
+                enquiryDetails: { required: true, label: 'Enquiry details' }
+            };
+            
+            if (!validateForm(validations)) {
+                return;
+            }
+            
+            const formData = getFormData();
+            Object.assign(state.userData, formData);
+            
+            showLoading('Submitting your enquiry...');
+            
+            sendToN8N(CONFIG.webhooks.general, state.userData).then(() => {
+                hideLoading();
+                showFinalMessage('general');
+            });
+        }
+
+        // SPECIAL CASE: Inheritance/Executor
+        function handleInheritance() {
+            clearChatBody();
+            updateProgress(2, 4);
+            
+            renderMessage(`
+                <h2>Inheritance or Executor Matter</h2>
+                <p>We understand this may be a difficult time. To assist you properly, we need some additional information.</p>
+            `);
+            
+            renderForm([
+                {
+                    name: 'deceasedName',
+                    label: 'Name of the Deceased',
+                    type: 'text',
+                    required: true,
+                    placeholder: 'Full name'
+                },
+                {
+                    name: 'relationship',
+                    label: 'Your Relationship to the Deceased',
+                    type: 'select',
+                    required: true,
+                    options: [
+                        { value: 'spouse', label: 'Spouse/Partner' },
+                        { value: 'child', label: 'Child' },
+                        { value: 'parent', label: 'Parent' },
+                        { value: 'sibling', label: 'Sibling' },
+                        { value: 'executor', label: 'Executor (not family)' },
+                        { value: 'solicitor', label: 'Solicitor/Legal Representative' },
+                        { value: 'other', label: 'Other' }
+                    ]
+                },
+                {
+                    name: 'hasAuthority',
+                    label: 'Do you have legal authority to act on behalf of the estate?',
+                    type: 'radio',
+                    required: true,
+                    options: [
+                        { value: 'yes', label: 'Yes, I have Grant of Probate or Letters of Administration' },
+                        { value: 'pending', label: 'Application is pending' },
+                        { value: 'no', label: 'No, not yet' },
+                        { value: 'unsure', label: 'I\'m not sure' }
+                    ]
+                },
+                {
+                    name: 'additionalInfo',
+                    label: 'Additional Information',
+                    type: 'textarea',
+                    required: false,
+                    placeholder: 'Please provide any additional details that might help us assist you...'
+                }
+            ], 'submitInheritance()', 'handleExistingClient()');
+        }
+
+        function submitInheritance() {
+            const validations = {
+                deceasedName: { required: true, label: 'Name of deceased' },
+                relationship: { required: true, label: 'Relationship' },
+                hasAuthority: { required: true, label: 'Legal authority' }
+            };
+            
+            if (!validateForm(validations)) {
+                return;
+            }
+            
+            const formData = getFormData();
+            Object.assign(state.userData, formData);
+            
+            showLoading('Routing to our specialist team...');
+            
+            sendToN8N(CONFIG.webhooks.inheritance, state.userData).then(() => {
+                hideLoading();
+                showFinalMessage('inheritance');
+            });
+        }
+
+        // FINAL MESSAGES
+        function showFinalMessage(type) {
+            updateProgress(4, 4);
+            clearChatBody();
+            
+            let message = '';
+            
+            switch(type) {
+                case 'existing-client':
+                    message = `
+                        <h2>Thank You, ${state.userData.name}</h2>
+                        <p>We've received your request and will be in touch shortly. Your enquiry has been routed to the appropriate team.</p>
+                        <div class="info-box">
+                            <h3>What happens next?</h3>
+                            <p>You can expect to hear from us within 1 business day. If your matter is urgent, please call us directly at <strong>020 7189 2400</strong>.</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'prospective-client':
+                    message = `
+                        <h2>Thank You, ${state.userData.name}</h2>
+                        <p>We're excited to potentially work with you. Your information has been received and the appropriate team will be in contact soon.</p>
+                        <div class="info-box">
+                            <h3>What happens next?</h3>
+                            <p>Based on your investment profile, we'll ${state.userData.routeTo === 'CAT' ? 'assign a dedicated relationship manager from our Centralized Relationship Team who' : 'have someone from our team'} contact you via your preferred method within 2 business days.</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'prospective-client-scheduled':
+                    message = `
+                        <h2>Meeting Confirmed</h2>
+                        <p>Thank you for scheduling a consultation with us. You should receive a confirmation email shortly with all the details.</p>
+                        <div class="info-box">
+                            <h3>Before your meeting</h3>
+                            <ul>
+                                <li>You'll receive a calendar invitation and reminder</li>
+                                <li>Feel free to prepare any questions you'd like to discuss</li>
+                                <li>We'll send you some helpful information about our services</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'careers':
+                    message = `
+                        <h2>Thank You, ${state.userData.name}</h2>
+                        <p>We appreciate your interest in joining Evelyn Partners. Your information has been forwarded to our careers team.</p>
+                        <div class="info-box">
+                            <h3>What happens next?</h3>
+                            <p>Our HR team will review your information and contact you if there's a suitable opportunity. You can also explore current openings on our careers portal.</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'press':
+                    message = `
+                        <h2>Thank You, ${state.userData.name}</h2>
+                        <p>Your press enquiry has been received and forwarded to our communications team.</p>
+                        <div class="info-box">
+                            <h3>What happens next?</h3>
+                            <p>Our press team will review your enquiry and respond as quickly as possible, typically within 4 business hours during office hours.</p>
+                            <p>For urgent press matters, please contact our press office directly at <strong>press@evelyn.com</strong></p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'general':
+                    message = `
+                        <h2>Thank You, ${state.userData.name}</h2>
+                        <p>We've received your enquiry and it has been routed to the appropriate team.</p>
+                        <div class="info-box">
+                            <h3>What happens next?</h3>
+                            <p>Someone from our team will review your enquiry and respond within 2 business days. If your matter requires urgent attention, please call us at <strong>020 7189 2400</strong>.</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'inheritance':
+                    message = `
+                        <h2>Thank You, ${state.userData.name}</h2>
+                        <p>We understand this is a sensitive time, and we're here to help. Your enquiry has been forwarded to our specialist bereavement team.</p>
+                        <div class="info-box">
+                            <h3>What happens next?</h3>
+                            <p>A member of our bereavement services team will contact you within 1 business day to discuss the next steps and what documentation may be required.</p>
+                            <p>If you need immediate assistance, please call our bereavement helpline at <strong>020 7189 2500</strong>.</p>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            renderMessage(message);
+            showSuccess('Your information has been successfully submitted.');
+            
+            renderButtons([
+                {
+                    text: 'Submit Another Enquiry',
+                    action: 'resetChatbot()',
+                    class: 'btn btn-primary',
+                    icon: 'fa-redo'
+                }
+            ]);
+        }
+
+        // RESET
+        function resetChatbot() {
+            state.currentStep = 'welcome';
+            state.userData = {};
+            state.history = [];
+            showWelcome();
+        }
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', function() {
+            showWelcome();
+        });
+    </script>
+</body>
+</html>
