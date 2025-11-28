@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evelyn Partners - Chat Widget</title>
+    <title>Chat Widget</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ===== EVELYN PARTNERS BRAND COLORS ===== */
+        /* ===== BRAND COLORS ===== */
         :root {
             --jaguar: #11011B;
             --twine: #C69D64;
@@ -708,7 +708,7 @@
             The enhanced chatbot now supports:
         </p>
         <ul style="color: #666; line-height: 1.8;">
-            <li><strong>General Q&A</strong> - Ask questions about Evelyn Partners services, answered by an LLM</li>
+            <li><strong>General Q&A</strong> - Ask questions about our services, answered by an LLM</li>
             <li><strong>Contact Flow</strong> - Submit enquiries for existing clients, new clients, careers, press, etc.</li>
         </ul>
     </div>
@@ -731,7 +731,7 @@
                         <i class="fas fa-headset"></i>
                     </div>
                     <div class="chatbot-header-text">
-                        <h1>Evelyn Partners</h1>
+                        <h1>Chatbot</h1>
                         <p id="headerStatus">Online • Ready to help</p>
                     </div>
                 </div>
@@ -1264,7 +1264,7 @@
             
             setTimeout(() => {
                 addBotMessage(
-                    `Hello! I'm the <strong>Evelyn Partners</strong> assistant. I can help answer your questions about our services, or connect you with our team.`,
+                    `Hello! I'm the <strong>Chatbot</strong> assistant. I can help answer your questions about our services, or connect you with our team.`,
                     false, [], {
                         suggestions: [
                             'What services do you offer?',
@@ -1294,7 +1294,7 @@
             state.mode = 'qa';
             state.awaitingInput = true;
             showModeIndicator(false);
-            setInputPlaceholder('Ask a question about Evelyn Partners...');
+            setInputPlaceholder('Ask a question about our services...');
             updateHeaderStatus('Online • Ready to help');
             enableInput();
             
@@ -1302,7 +1302,7 @@
             
             setTimeout(() => {
                 addBotMessage(
-                    'Great! Ask me anything about Evelyn Partners - our services, approach, or how we can help you.',
+                    'Great! Ask me anything about our services, approach, or how we can help you.',
                     false, [], {
                         suggestions: [
                             'Investment management',
@@ -1399,12 +1399,12 @@
             state.currentField = null;
             
             showModeIndicator(false);
-            setInputPlaceholder('Ask a question about Evelyn Partners...');
+            setInputPlaceholder('Ask a question about our company...');
             updateHeaderStatus('Online • Ready to help');
             enableInput();
             
             addBotMessage(
-                'No problem! What would you like to know about Evelyn Partners?',
+                'No problem! What would you like to know about our company?',
                 false, [], {
                     suggestions: [
                         'What services do you offer?',
@@ -1773,7 +1773,7 @@
                     break;
 
                 case 'careers':
-                    addBotMessage(`Thank you, <strong>${userName}</strong>! We appreciate your interest in joining Evelyn Partners.`);
+                    addBotMessage(`Thank you, <strong>${userName}</strong>! We appreciate your interest in joining our company.`);
                     infoContent = '<p>Our HR team will review your information and contact you if there\'s a suitable opportunity.</p>';
                     break;
 
