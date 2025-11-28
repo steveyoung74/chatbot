@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evelyn Partners - Chat Widget</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== EVELYN PARTNERS BRAND COLORS ===== */
+        :root {
+            --jaguar: #11011B;
+            --twine: #C69D64;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --border-gray: #E0E0E0;
+            --text-gray: #666666;
+            --error-red: #D32F2F;
+            --success-green: #388E3C;
+            --bot-message-bg: #FFFFFF;
+            --user-message-bg: #C69D64;
+        }
+
+        /* ===== FLOATING BUTTON ===== */
+        .chat-widget-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--twine);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: all 0.3s ease;
+            z-index: 9998;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 24px rgba(198, 157, 100, 0.6);
+            }
+        }
+
+        .chat-widget-button:hover {
+            transform: scale(1.1);
+            background: var(--jaguar);
+            animation: none;
+        }
+
+        .chat-widget-button.open {
+            background: var(--jaguar);
+            animation: none;
+        }
+
+        .chat-widget-button .icon-chat {
+            display: block;
+        }
+
+        .chat-widget-button .icon-close {
+            display: none;
+        }
+
+        .chat-widget-button.open .icon-chat {
+            display: none;
+        }
+
+        .chat-widget-button.open .icon-close {
+            display: block;
+        }
+
+        .chat-widget-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--error-red);
+            color: var(--white);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid var(--white);
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* ===== WIDGET CONTAINER ===== */
+        .chat-widget-container {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 420px;
+            height: 620px;
+            z-index: 9999;
+            display: none;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .chat-widget-container.open {
+            display: block;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== CHATBOT CONTAINER ===== */
+        .chatbot-container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .chatbot-header {
+            background: var(--jaguar);
+            color: var(--white);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--twine);
+            flex-shrink: 0;
+        }
+
+        .chatbot-header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chatbot-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--twine);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chatbot-header-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .chatbot-header-text p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .chatbot-header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-btn {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .header-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* ===== CHAT BODY ===== */
+        .chatbot-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: var(--light-gray);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chatbot-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chatbot-body::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+
+        .chatbot-body::-webkit-scrollbar-thumb {
+            background: var(--twine);
+            border-radius: 3px;
+        }
+
+        /* ===== MESSAGES ===== */
+        .message {
+            display: flex;
+            margin-bottom: 8px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            position: relative;
+        }
+
+        .message.bot .message-bubble {
+            background: var(--bot-message-bg);
+            border: 1px solid var(--border-gray);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-bubble {
+            background: var(--user-message-bg);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message-text strong {
+            font-weight: 600;
+        }
+
+        .message-text p {
+            margin: 0 0 8px 0;
+        }
+
+        .message-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-text ul, .message-text ol {
+            margin: 8px 0 8px 20px;
+            padding: 0;
+        }
+
+        .message-text li {
+            margin-bottom: 4px;
+        }
+
+        .message-text a {
+            color: var(--twine);
+            text-decoration: underline;
+        }
+
+        .message.user .message-text a {
+            color: var(--white);
+        }
+
+        /* ===== TYPING INDICATOR ===== */
+        .typing-indicator {
+            display: none;
+            padding: 10px 14px;
+            background: var(--bot-message-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
+            max-width: 60px;
+        }
+
+        .typing-indicator.show {
+            display: inline-block;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--twine);
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        /* ===== INPUT AREA ===== */
+        .chat-input-area {
+            padding: 12px 16px;
+            background: var(--white);
+            border-top: 1px solid var(--border-gray);
+            flex-shrink: 0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .input-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--jaguar);
+            display: none;
+        }
+
+        .input-label.show {
+            display: block;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-gray);
+            border-radius: 20px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--white);
+            resize: none;
+            max-height: 100px;
+            min-height: 40px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--twine);
+            box-shadow: 0 0 0 3px rgba(198, 157, 100, 0.1);
+        }
+
+        .chat-input.error {
+            border-color: var(--error-red);
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--twine);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .send-button:hover:not(:disabled) {
+            background: var(--jaguar);
+            transform: scale(1.05);
+        }
+
+        .send-button:disabled {
+            background: var(--border-gray);
+            cursor: not-allowed;
+        }
+
+        /* ===== BUTTON OPTIONS ===== */
+        .button-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .button-options.horizontal {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .button-options.horizontal .option-btn {
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .option-btn {
+            padding: 10px 12px;
+            border: 2px solid var(--twine);
+            background: var(--white);
+            color: var(--jaguar);
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-btn i {
+            color: var(--twine);
+            font-size: 14px;
+            min-width: 16px;
+        }
+
+        .option-btn:hover {
+            background: var(--twine);
+            color: var(--white);
+            transform: translateX(3px);
+        }
+
+        .button-options.horizontal .option-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .option-btn:hover i {
+            color: var(--white);
+        }
+
+        .option-btn.secondary {
+            border-color: var(--border-gray);
+            background: var(--light-gray);
+        }
+
+        .option-btn.secondary i {
+            color: var(--text-gray);
+        }
+
+        .option-btn.secondary:hover {
+            background: var(--jaguar);
+            border-color: var(--jaguar);
+        }
+
+        /* ===== QUICK SUGGESTIONS ===== */
+        .quick-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .suggestion-chip {
+            padding: 6px 12px;
+            background: var(--light-gray);
+            border: 1px solid var(--border-gray);
+            color: var(--jaguar);
+            font-size: 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-chip:hover {
+            background: var(--twine);
+            color: var(--white);
+            border-color: var(--twine);
+        }
+
+        /* ===== ERROR MESSAGE ===== */
+        .error-message {
+            color: var(--error-red);
+            font-size: 11px;
+            margin-top: 2px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* ===== INFO BOX IN CHAT ===== */
+        .info-box-message {
+            background: rgba(198, 157, 100, 0.1);
+            border-left: 3px solid var(--twine);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 6px;
+            font-size: 13px;
+        }
+
+        .info-box-message h4 {
+            color: var(--jaguar);
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .info-box-message ul {
+            margin: 6px 0 0 14px;
+            color: var(--text-gray);
+        }
+
+        .info-box-message li {
+            margin-bottom: 3px;
+            font-size: 12px;
+        }
+
+        .info-box-message p {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin: 0;
+        }
+
+        /* ===== SUCCESS MESSAGE IN CHAT ===== */
+        .success-box {
+            background: var(--success-green);
+            color: var(--white);
+            padding: 10px 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .success-box i {
+            font-size: 16px;
+        }
+
+        /* ===== SOURCE REFERENCE ===== */
+        .source-reference {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-gray);
+            font-size: 11px;
+            color: var(--text-gray);
+        }
+
+        .source-reference a {
+            color: var(--twine);
+            text-decoration: none;
+        }
+
+        .source-reference a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== MODE INDICATOR ===== */
+        .mode-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            background: var(--light-gray);
+            font-size: 11px;
+            color: var(--text-gray);
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .mode-indicator i {
+            color: var(--twine);
+        }
+
+        .mode-indicator button {
+            background: none;
+            border: none;
+            color: var(--twine);
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+            margin-left: 4px;
+        }
+
+        .mode-indicator button:hover {
+            color: var(--jaguar);
+        }
+
+        /* ===== CALENDLY EMBED ===== */
+        .calendly-embed {
+            width: 100%;
+            min-height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .chat-widget-container {
+                bottom: 90px;
+                right: 12px;
+                left: 12px;
+                width: auto;
+                height: calc(100vh - 110px);
+                max-height: 620px;
+            }
+
+            .chat-widget-button {
+                bottom: 16px;
+                right: 16px;
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-widget-container {
+                bottom: 0;
+                right: 0;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                max-height: 100%;
+                border-radius: 0;
+            }
+
+            .chatbot-container {
+                border-radius: 0;
+            }
+
+            .chat-widget-button {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo webpage content -->
+    <div style="padding: 40px; max-width: 1200px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <h1 style="color: #11011B;">Your Website Content</h1>
+        <p style="color: #666; line-height: 1.6;">
+            This is your main website. The chat widget button will appear in the bottom-right corner.
+            Click it to open the chatbot!
+        </p>
+        <p style="color: #666; line-height: 1.6;">
+            The enhanced chatbot now supports:
+        </p>
+        <ul style="color: #666; line-height: 1.8;">
+            <li><strong>General Q&A</strong> - Ask questions about Evelyn Partners services, answered by an LLM</li>
+            <li><strong>Contact Flow</strong> - Submit enquiries for existing clients, new clients, careers, press, etc.</li>
+        </ul>
+    </div>
+
+    <!-- ===== CHAT WIDGET ===== -->
+    
+    <!-- Floating Button -->
+    <button class="chat-widget-button" id="chatWidgetButton" onclick="toggleChat()">
+        <i class="fas fa-comments icon-chat"></i>
+        <i class="fas fa-times icon-close"></i>
+        <span class="chat-widget-badge hidden" id="chatBadge">1</span>
+    </button>
+
+    <!-- Chat Widget Container -->
+    <div class="chat-widget-container" id="chatWidgetContainer">
+        <div class="chatbot-container">
+            <div class="chatbot-header">
+                <div class="chatbot-header-content">
+                    <div class="chatbot-avatar">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="chatbot-header-text">
+                        <h1>Evelyn Partners</h1>
+                        <p id="headerStatus">Online • Ready to help</p>
+                    </div>
+                </div>
+                <div class="chatbot-header-actions">
+                    <button class="header-btn" onclick="minimizeChat()" title="Minimize">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="header-btn" onclick="toggleChat()" title="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mode indicator (shown when in contact flow) -->
+            <div class="mode-indicator hidden" id="modeIndicator">
+                <i class="fas fa-envelope"></i>
+                <span>Contact form mode</span>
+                <button onclick="switchToQA()">Back to Q&A</button>
+            </div>
+
+            <div class="chatbot-body" id="chatbotBody">
+                <!-- Messages will be inserted here -->
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <div class="input-field">
+                        <label class="input-label" id="inputLabel"></label>
+                        <input 
+                            type="text" 
+                            id="chatInput" 
+                            class="chat-input" 
+                            placeholder="Ask a question or type your message..."
+                            autocomplete="off"
+                        >
+                        <span class="error-message" id="errorMessage"></span>
+                    </div>
+                    <button class="send-button" id="sendButton" onclick="handleSend()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendly embed script -->
+    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const CONFIG = {
+            webhooks: {
+                // LLM Q&A webhook - sends user question, returns AI response
+                llmChat: 'https://your-n8n-instance.com/webhook/llm-chat',
+                
+                // Contact form webhooks
+                existingClient: 'https://your-n8n-instance.com/webhook/existing-client',
+                prospectiveClient: 'https://your-n8n-instance.com/webhook/prospective-client',
+                careers: 'https://your-n8n-instance.com/webhook/careers',
+                press: 'https://your-n8n-instance.com/webhook/press',
+                general: 'https://your-n8n-instance.com/webhook/general',
+                inheritance: 'https://your-n8n-instance.com/webhook/inheritance'
+            },
+            catThreshold: 250000,
+            calendlyUrl: 'https://calendly.com/your-team/consultation',
+            typingDelay: 800,
+            autoOpenDelay: 3000,
+            showBadge: true,
+            
+            // LLM-specific settings
+            llmTimeout: 30000, // 30 second timeout for LLM responses
+            showSources: true  // Show source links from evelyn.com
+        };
+
+        // ===== WIDGET CONTROL =====
+        let chatInitialized = false;
+        let isOpen = false;
+
+        function toggleChat() {
+            const container = document.getElementById('chatWidgetContainer');
+            const button = document.getElementById('chatWidgetButton');
+            const badge = document.getElementById('chatBadge');
+            
+            isOpen = !isOpen;
+            
+            if (isOpen) {
+                container.classList.add('open');
+                button.classList.add('open');
+                badge.classList.add('hidden');
+                
+                if (!chatInitialized) {
+                    chatInitialized = true;
+                    startConversation();
+                }
+                
+                setTimeout(() => {
+                    const input = document.getElementById('chatInput');
+                    if (input && !input.disabled) {
+                        input.focus();
+                    }
+                }, 300);
+            } else {
+                container.classList.remove('open');
+                button.classList.remove('open');
+            }
+        }
+
+        function minimizeChat() {
+            toggleChat();
+        }
+
+        if (CONFIG.autoOpenDelay > 0) {
+            setTimeout(() => {
+                if (!isOpen && !sessionStorage.getItem('chat_auto_opened')) {
+                    const badge = document.getElementById('chatBadge');
+                    if (CONFIG.showBadge) {
+                        badge.classList.remove('hidden');
+                    }
+                    sessionStorage.setItem('chat_auto_opened', 'true');
+                }
+            }, CONFIG.autoOpenDelay);
+        }
+
+        // ===== STATE MANAGEMENT =====
+        const state = {
+            mode: 'qa', // 'qa' for Q&A mode, 'contact' for contact flow
+            currentStep: 'welcome',
+            currentFlow: null,
+            userData: {},
+            awaitingInput: false,
+            currentField: null,
+            conversationHistory: [] // For LLM context
+        };
+
+        // ===== CONTACT FORM FLOWS =====
+        const flows = {
+            'existing-client': [
+                { field: 'name', question: 'May I have your full name, please?', type: 'text', required: true },
+                { field: 'email', question: 'What\'s your email address?', type: 'email', required: true },
+                { field: 'phone', question: 'And your phone number? (optional - press Enter to skip)', type: 'tel', required: false },
+                { field: 'enquiryNature', question: 'How can we help you today?', type: 'select', required: true, 
+                  options: [
+                      { value: 'speak-to-advisor', label: 'Speak to My Advisor' },
+                      { value: 'account-support', label: 'Account Support' },
+                      { value: 'technical-issue', label: 'Technical Issue' },
+                      { value: 'update-details', label: 'Update My Details' },
+                      { value: 'inheritance', label: 'Inheritance/Executor Matter' },
+                      { value: 'other', label: 'Other' }
+                  ]
+                }
+            ],
+            'prospective-client': [
+                { field: 'name', question: 'Wonderful! Let\'s start with your name.', type: 'text', required: true },
+                { field: 'email', question: 'What\'s your email address?', type: 'email', required: true },
+                { field: 'phone', question: 'And your phone number? (optional - press Enter to skip)', type: 'tel', required: false },
+                { field: 'investmentValue', question: 'To match you with the right team, what\'s your approximate investment value?', type: 'select', required: true,
+                  options: [
+                      { value: 'under-100k', label: 'Under £100,000' },
+                      { value: '100k-250k', label: '£100,000 - £250,000' },
+                      { value: '250k-500k', label: '£250,000 - £500,000' },
+                      { value: '500k-1m', label: '£500,000 - £1,000,000' },
+                      { value: 'over-1m', label: 'Over £1,000,000' },
+                      { value: 'not-sure', label: 'I\'m not sure' }
+                  ]
+                }
+            ],
+            'careers': [
+                { field: 'name', question: 'Great! Let\'s start with your name.', type: 'text', required: true },
+                { field: 'email', question: 'What\'s your email address?', type: 'email', required: true },
+                { field: 'phone', question: 'Your phone number? (optional)', type: 'tel', required: false },
+                { field: 'interestArea', question: 'Which area interests you most?', type: 'select', required: true,
+                  options: [
+                      { value: 'regional-manager', label: 'Regional Manager Programme' },
+                      { value: 'advisor', label: 'Advisor Roles' },
+                      { value: 'support', label: 'Support Functions' },
+                      { value: 'graduate', label: 'Graduate Schemes' },
+                      { value: 'general', label: 'General Interest' }
+                  ]
+                },
+                { field: 'message', question: 'Tell me a bit about yourself and your experience. (optional)', type: 'textarea', required: false }
+            ],
+            'press': [
+                { field: 'name', question: 'May I have your name, please?', type: 'text', required: true },
+                { field: 'email', question: 'Your email address?', type: 'email', required: true },
+                { field: 'organization', question: 'Which publication or organization do you represent?', type: 'text', required: true },
+                { field: 'phone', question: 'Your phone number? (optional)', type: 'tel', required: false },
+                { field: 'enquiryDetails', question: 'What\'s your press enquiry about?', type: 'textarea', required: true }
+            ],
+            'general': [
+                { field: 'name', question: 'May I have your name?', type: 'text', required: true },
+                { field: 'email', question: 'Your email address?', type: 'email', required: true },
+                { field: 'phone', question: 'Your phone number? (optional)', type: 'tel', required: false },
+                { field: 'company', question: 'Are you enquiring on behalf of a company? If so, which one? (optional)', type: 'text', required: false },
+                { field: 'enquiryType', question: 'What type of enquiry is this?', type: 'select', required: true,
+                  options: [
+                      { value: 'partnership', label: 'Partnership Opportunity' },
+                      { value: 'corporate-services', label: 'Corporate Services' },
+                      { value: 'complaint', label: 'Complaint' },
+                      { value: 'feedback', label: 'Feedback' },
+                      { value: 'other', label: 'Other' }
+                  ]
+                },
+                { field: 'enquiryDetails', question: 'Please provide details about your enquiry.', type: 'textarea', required: true }
+            ],
+            'inheritance': [
+                { field: 'deceasedName', question: 'I\'m very sorry for your loss. May I have the name of the deceased?', type: 'text', required: true },
+                { field: 'relationship', question: 'What was your relationship to the deceased?', type: 'select', required: true,
+                  options: [
+                      { value: 'spouse', label: 'Spouse/Partner' },
+                      { value: 'child', label: 'Child' },
+                      { value: 'parent', label: 'Parent' },
+                      { value: 'sibling', label: 'Sibling' },
+                      { value: 'executor', label: 'Executor (not family)' },
+                      { value: 'solicitor', label: 'Solicitor/Legal Representative' },
+                      { value: 'other', label: 'Other' }
+                  ]
+                },
+                { field: 'hasAuthority', question: 'Do you have legal authority to act on behalf of the estate?', type: 'select', required: true,
+                  options: [
+                      { value: 'yes', label: 'Yes, I have Grant of Probate or Letters of Administration' },
+                      { value: 'pending', label: 'Application is pending' },
+                      { value: 'no', label: 'No, not yet' },
+                      { value: 'unsure', label: 'I\'m not sure' }
+                  ]
+                },
+                { field: 'additionalInfo', question: 'Is there anything else you\'d like to add? (optional)', type: 'textarea', required: false }
+            ]
+        };
+
+        // ===== UTILITY FUNCTIONS =====
+        function scrollToBottom() {
+            const chatBody = document.getElementById('chatbotBody');
+            setTimeout(() => {
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 100);
+        }
+
+        function showTypingIndicator() {
+            const chatBody = document.getElementById('chatbotBody');
+            const typingHTML = `
+                <div class="message bot" id="typingIndicator">
+                    <div class="typing-indicator show">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', typingHTML);
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        function disableInput() {
+            const input = document.getElementById('chatInput');
+            const button = document.getElementById('sendButton');
+            input.disabled = true;
+            button.disabled = true;
+        }
+
+        function enableInput() {
+            const input = document.getElementById('chatInput');
+            const button = document.getElementById('sendButton');
+            input.disabled = false;
+            button.disabled = false;
+            input.focus();
+        }
+
+        function clearInput() {
+            const input = document.getElementById('chatInput');
+            const errorMsg = document.getElementById('errorMessage');
+            input.value = '';
+            input.classList.remove('error');
+            errorMsg.classList.remove('show');
+            errorMsg.textContent = '';
+        }
+
+        function showError(message) {
+            const input = document.getElementById('chatInput');
+            const errorMsg = document.getElementById('errorMessage');
+            input.classList.add('error');
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+        }
+
+        function setInputPlaceholder(text) {
+            document.getElementById('chatInput').placeholder = text;
+        }
+
+        function showModeIndicator(show) {
+            const indicator = document.getElementById('modeIndicator');
+            if (show) {
+                indicator.classList.remove('hidden');
+            } else {
+                indicator.classList.add('hidden');
+            }
+        }
+
+        function updateHeaderStatus(status) {
+            document.getElementById('headerStatus').textContent = status;
+        }
+
+        function validateInput(value, type, required) {
+            if (required && !value.trim()) {
+                return { valid: false, error: 'This field is required.' };
+            }
+
+            if (!value.trim() && !required) {
+                return { valid: true };
+            }
+
+            if (type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    return { valid: false, error: 'Please enter a valid email address.' };
+                }
+            }
+
+            if (type === 'tel' && value.trim()) {
+                const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+                if (!phoneRegex.test(value) || value.replace(/\D/g, '').length < 10) {
+                    return { valid: false, error: 'Please enter a valid phone number.' };
+                }
+            }
+
+            return { valid: true };
+        }
+
+        function getSessionId() {
+            let sessionId = sessionStorage.getItem('chatbot_session_id');
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('chatbot_session_id', sessionId);
+            }
+            return sessionId;
+        }
+
+        // ===== API FUNCTIONS =====
+        async function sendToN8N(webhook, data) {
+            try {
+                const response = await fetch(webhook, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        timestamp: new Date().toISOString(),
+                        sessionId: getSessionId()
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error sending to n8n:', error);
+                return { success: true };
+            }
+        }
+
+        async function sendToLLM(question) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.llmTimeout);
+
+                const response = await fetch(CONFIG.webhooks.llmChat, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        conversationHistory: state.conversationHistory.slice(-10), // Last 10 messages for context
+                        sessionId: getSessionId(),
+                        timestamp: new Date().toISOString()
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                
+                // Expected response format from n8n:
+                // {
+                //   answer: "The response text...",
+                //   sources: [{ title: "Page Title", url: "https://evelyn.com/..." }], // optional
+                //   confidence: 0.95, // optional
+                //   suggestContact: false // optional - if true, offer contact options
+                // }
+                
+                return data;
+            } catch (error) {
+                console.error('Error sending to LLM:', error);
+                
+                if (error.name === 'AbortError') {
+                    return {
+                        answer: "I apologize, but it's taking longer than expected to process your question. Please try again or contact us directly.",
+                        suggestContact: true
+                    };
+                }
+                
+                return {
+                    answer: "I'm sorry, I'm having trouble connecting right now. Would you like to speak with someone from our team instead?",
+                    suggestContact: true
+                };
+            }
+        }
+
+        // ===== MESSAGE FUNCTIONS =====
+        function addBotMessage(text, includeButtons = false, buttons = [], options = {}) {
+            const chatBody = document.getElementById('chatbotBody');
+            
+            let messageHTML = `
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">${text}</div>
+            `;
+
+            // Add source references if provided
+            if (options.sources && options.sources.length > 0 && CONFIG.showSources) {
+                messageHTML += '<div class="source-reference"><i class="fas fa-link"></i> Source: ';
+                messageHTML += options.sources.map(s => 
+                    `<a href="${s.url}" target="_blank">${s.title || 'evelyn.com'}</a>`
+                ).join(', ');
+                messageHTML += '</div>';
+            }
+
+            if (includeButtons && buttons.length > 0) {
+                const buttonClass = options.horizontal ? 'button-options horizontal' : 'button-options';
+                messageHTML += `<div class="${buttonClass}">`;
+                buttons.forEach(button => {
+                    const icon = button.icon || 'fa-arrow-right';
+                    const btnClass = button.secondary ? 'option-btn secondary' : 'option-btn';
+                    messageHTML += `
+                        <button class="${btnClass}" onclick="${button.action}">
+                            <i class="fas ${icon}"></i>
+                            <span>${button.text}</span>
+                        </button>
+                    `;
+                });
+                messageHTML += '</div>';
+            }
+
+            // Add quick suggestions if provided
+            if (options.suggestions && options.suggestions.length > 0) {
+                messageHTML += '<div class="quick-suggestions">';
+                options.suggestions.forEach(suggestion => {
+                    messageHTML += `
+                        <button class="suggestion-chip" onclick="askQuestion('${suggestion.replace(/'/g, "\\'")}')">
+                            ${suggestion}
+                        </button>
+                    `;
+                });
+                messageHTML += '</div>';
+            }
+
+            messageHTML += `
+                    </div>
+                </div>
+            `;
+
+            chatBody.insertAdjacentHTML('beforeend', messageHTML);
+            scrollToBottom();
+        }
+
+        function addUserMessage(text) {
+            const chatBody = document.getElementById('chatbotBody');
+            const messageHTML = `
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">${text}</div>
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', messageHTML);
+            scrollToBottom();
+        }
+
+        function addInfoBox(title, content) {
+            const chatBody = document.getElementById('chatbotBody');
+            const messageHTML = `
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="info-box-message">
+                            <h4>${title}</h4>
+                            ${content}
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', messageHTML);
+            scrollToBottom();
+        }
+
+        function addSuccessMessage(text) {
+            const chatBody = document.getElementById('chatbotBody');
+            const messageHTML = `
+                <div class="message bot">
+                    <div class="success-box">
+                        <i class="fas fa-check-circle"></i>
+                        <span>${text}</span>
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', messageHTML);
+            scrollToBottom();
+        }
+
+        // ===== CONVERSATION STARTERS =====
+        function startConversation() {
+            state.mode = 'qa';
+            showModeIndicator(false);
+            setInputPlaceholder('Ask a question or type your message...');
+            
+            setTimeout(() => {
+                addBotMessage(
+                    `Hello! I'm the <strong>Evelyn Partners</strong> assistant. I can help answer your questions about our services, or connect you with our team.`,
+                    false, [], {
+                        suggestions: [
+                            'What services do you offer?',
+                            'How can I become a client?',
+                            'Tell me about wealth management'
+                        ]
+                    }
+                );
+                
+                setTimeout(() => {
+                    addBotMessage(
+                        'What would you like to know?',
+                        true,
+                        [
+                            { text: 'Ask a question', action: 'enableQAMode()', icon: 'fa-question-circle' },
+                            { text: 'Contact us', action: 'showContactOptions()', icon: 'fa-envelope' }
+                        ],
+                        { horizontal: true }
+                    );
+                    enableInput();
+                }, 600);
+            }, 500);
+        }
+
+        // ===== Q&A MODE =====
+        function enableQAMode() {
+            state.mode = 'qa';
+            state.awaitingInput = true;
+            showModeIndicator(false);
+            setInputPlaceholder('Ask a question about Evelyn Partners...');
+            updateHeaderStatus('Online • Ready to help');
+            enableInput();
+            
+            addUserMessage('Ask a question');
+            
+            setTimeout(() => {
+                addBotMessage(
+                    'Great! Ask me anything about Evelyn Partners - our services, approach, or how we can help you.',
+                    false, [], {
+                        suggestions: [
+                            'Investment management',
+                            'Financial planning',
+                            'Tax services'
+                        ]
+                    }
+                );
+            }, 300);
+        }
+
+        function askQuestion(question) {
+            // Called when user clicks a suggestion chip
+            const input = document.getElementById('chatInput');
+            input.value = question;
+            handleSend();
+        }
+
+        async function handleQAQuestion(question) {
+            // Add to conversation history
+            state.conversationHistory.push({
+                role: 'user',
+                content: question
+            });
+            
+            disableInput();
+            updateHeaderStatus('Thinking...');
+            showTypingIndicator();
+            
+            // Send to LLM via n8n
+            const response = await sendToLLM(question);
+            
+            hideTypingIndicator();
+            updateHeaderStatus('Online • Ready to help');
+            
+            // Add response to history
+            state.conversationHistory.push({
+                role: 'assistant',
+                content: response.answer
+            });
+            
+            // Display the answer
+            addBotMessage(
+                response.answer,
+                response.suggestContact,
+                response.suggestContact ? [
+                    { text: 'Contact us', action: 'showContactOptions()', icon: 'fa-envelope' },
+                    { text: 'Ask another question', action: 'continueQA()', icon: 'fa-question-circle', secondary: true }
+                ] : [],
+                {
+                    sources: response.sources,
+                    suggestions: response.relatedQuestions || []
+                }
+            );
+            
+            if (!response.suggestContact) {
+                // Offer options after answering
+                setTimeout(() => {
+                    addBotMessage(
+                        'Is there anything else you\'d like to know?',
+                        true,
+                        [
+                            { text: 'Ask another question', action: 'continueQA()', icon: 'fa-question-circle' },
+                            { text: 'Contact us', action: 'showContactOptions()', icon: 'fa-envelope', secondary: true }
+                        ],
+                        { horizontal: true }
+                    );
+                }, 500);
+            }
+            
+            enableInput();
+        }
+
+        function continueQA() {
+            addUserMessage('Ask another question');
+            state.mode = 'qa';
+            state.awaitingInput = true;
+            showModeIndicator(false);
+            setInputPlaceholder('Ask another question...');
+            enableInput();
+            
+            setTimeout(() => {
+                addBotMessage('Of course! What else would you like to know?');
+            }, 300);
+        }
+
+        function switchToQA() {
+            // Reset contact flow state
+            state.mode = 'qa';
+            state.currentFlow = null;
+            state.currentStep = 0;
+            state.userData = {};
+            state.awaitingInput = true;
+            state.currentField = null;
+            
+            showModeIndicator(false);
+            setInputPlaceholder('Ask a question about Evelyn Partners...');
+            updateHeaderStatus('Online • Ready to help');
+            enableInput();
+            
+            addBotMessage(
+                'No problem! What would you like to know about Evelyn Partners?',
+                false, [], {
+                    suggestions: [
+                        'What services do you offer?',
+                        'Investment management',
+                        'Financial planning'
+                    ]
+                }
+            );
+        }
+
+        // ===== CONTACT MODE =====
+        function showContactOptions() {
+            state.mode = 'contact-selection';
+            
+            addUserMessage('Contact us');
+            
+            setTimeout(() => {
+                showTypingIndicator();
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    addBotMessage(
+                        'I\'d be happy to connect you with our team. What best describes your enquiry?',
+                        true,
+                        [
+                            { text: "I'm an Existing Client", action: "selectFlow('existing-client')", icon: "fa-user-check" },
+                            { text: "I'm Interested in Becoming a Client", action: "selectFlow('prospective-client')", icon: "fa-handshake" },
+                            { text: "I'm Interested in Working with You", action: "selectFlow('careers')", icon: "fa-briefcase" },
+                            { text: "I have a Press Enquiry", action: "selectFlow('press')", icon: "fa-newspaper" },
+                            { text: "I have a General or Corporate Enquiry", action: "selectFlow('general')", icon: "fa-question-circle" }
+                        ]
+                    );
+                    disableInput();
+                }, CONFIG.typingDelay);
+            }, 300);
+        }
+
+        function selectFlow(flowName) {
+            state.mode = 'contact';
+            state.currentFlow = flowName;
+            state.userData.enquiryType = flowName;
+            state.currentStep = 0;
+            
+            showModeIndicator(true);
+            updateHeaderStatus('Contact form');
+
+            const flowLabels = {
+                'existing-client': "I'm an Existing Client",
+                'prospective-client': "I'm Interested in Becoming a Client",
+                'careers': "I'm Interested in Working with You",
+                'press': "I have a Press Enquiry",
+                'general': "I have a General or Corporate Enquiry"
+            };
+            
+            addUserMessage(flowLabels[flowName]);
+
+            setTimeout(() => {
+                let welcomeText = '';
+                switch(flowName) {
+                    case 'existing-client':
+                        welcomeText = 'Welcome back! I\'ll need a few details to direct you to the right person.';
+                        break;
+                    case 'prospective-client':
+                        welcomeText = 'Thank you for your interest! I\'ll ask you a few questions to understand your needs better.';
+                        break;
+                    case 'careers':
+                        welcomeText = 'Excellent! We\'re always looking for talented people. Let me collect some information.';
+                        break;
+                    case 'press':
+                        welcomeText = 'Thank you for reaching out. Let me gather the necessary information.';
+                        break;
+                    case 'general':
+                        welcomeText = 'Thank you for contacting us. Let me collect some details about your enquiry.';
+                        break;
+                }
+                
+                showTypingIndicator();
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    addBotMessage(welcomeText);
+                    askNextQuestion();
+                }, CONFIG.typingDelay);
+            }, 300);
+        }
+
+        function askNextQuestion() {
+            const flow = flows[state.currentFlow];
+            
+            if (state.currentStep >= flow.length) {
+                handleFlowCompletion();
+                return;
+            }
+
+            const currentQuestion = flow[state.currentStep];
+            state.currentField = currentQuestion;
+            state.awaitingInput = true;
+
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+
+                if (currentQuestion.type === 'select') {
+                    addBotMessage(currentQuestion.question, true, 
+                        currentQuestion.options.map(opt => ({
+                            text: opt.label,
+                            action: `selectOption('${opt.value}', '${opt.label.replace(/'/g, "\\'")}')`,
+                            icon: 'fa-check'
+                        }))
+                    );
+                    disableInput();
+                } else {
+                    addBotMessage(currentQuestion.question);
+                    setInputPlaceholder(getPlaceholder(currentQuestion.type));
+                    enableInput();
+                }
+            }, CONFIG.typingDelay);
+        }
+
+        function getPlaceholder(type) {
+            switch(type) {
+                case 'email': return 'your.email@example.com';
+                case 'tel': return '+44 20 1234 5678';
+                case 'textarea': return 'Type your message...';
+                default: return 'Type your answer...';
+            }
+        }
+
+        function selectOption(value, label) {
+            if (!state.awaitingInput) return;
+
+            addUserMessage(label);
+            state.userData[state.currentField.field] = value;
+            state.awaitingInput = false;
+
+            if (state.currentField.field === 'enquiryNature' && value === 'inheritance') {
+                setTimeout(() => {
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        hideTypingIndicator();
+                        addBotMessage('I understand. Let me transfer you to our specialist team. I\'ll need some additional information.');
+                        state.currentFlow = 'inheritance';
+                        state.currentStep = 0;
+                        askNextQuestion();
+                    }, CONFIG.typingDelay);
+                }, 300);
+                return;
+            }
+
+            if (state.currentField.field === 'investmentValue') {
+                const highValueRanges = ['250k-500k', '500k-1m', 'over-1m'];
+                state.userData.routeTo = highValueRanges.includes(value) ? 'CAT' : 'general-services';
+            }
+
+            state.currentStep++;
+            setTimeout(() => {
+                askNextQuestion();
+            }, 300);
+        }
+
+        // ===== MAIN SEND HANDLER =====
+        function handleSend() {
+            const input = document.getElementById('chatInput');
+            const value = input.value.trim();
+            
+            if (!value) return;
+            
+            // Determine what to do based on current mode
+            if (state.mode === 'qa') {
+                // Q&A mode - send to LLM
+                addUserMessage(value);
+                clearInput();
+                handleQAQuestion(value);
+            } else if (state.mode === 'contact' && state.awaitingInput) {
+                // Contact form mode - validate and process field
+                handleContactInput(value);
+            } else {
+                // Default - treat as Q&A
+                addUserMessage(value);
+                clearInput();
+                state.mode = 'qa';
+                handleQAQuestion(value);
+            }
+        }
+
+        function handleContactInput(value) {
+            const validation = validateInput(value, state.currentField.type, state.currentField.required);
+            
+            if (!validation.valid) {
+                showError(validation.error);
+                return;
+            }
+
+            if (value) {
+                addUserMessage(value);
+                state.userData[state.currentField.field] = value;
+            } else {
+                addUserMessage('<em>Skipped</em>');
+                state.userData[state.currentField.field] = '';
+            }
+
+            clearInput();
+            disableInput();
+            state.awaitingInput = false;
+
+            state.currentStep++;
+            setTimeout(() => {
+                askNextQuestion();
+            }, 300);
+        }
+
+        function handleFlowCompletion() {
+            disableInput();
+            
+            if (state.currentFlow === 'prospective-client' && !state.userData.contactMethod) {
+                showTypingIndicator();
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    
+                    const routeMessage = state.userData.routeTo === 'CAT' 
+                        ? 'Based on your investment value, we\'ll connect you with our <strong>Centralized Relationship Team</strong> who specialize in comprehensive wealth management.'
+                        : 'We\'d be happy to discuss how our services can help you achieve your financial goals.';
+                    
+                    addBotMessage(routeMessage);
+                    
+                    setTimeout(() => {
+                        showTypingIndicator();
+                        setTimeout(() => {
+                            hideTypingIndicator();
+                            addBotMessage('How would you like us to contact you?', true, [
+                                { text: 'Email me with information', action: "selectContactMethod('email')", icon: 'fa-envelope' },
+                                { text: 'Call me to discuss', action: "selectContactMethod('call')", icon: 'fa-phone' },
+                                { text: 'Schedule a meeting', action: "selectContactMethod('schedule')", icon: 'fa-calendar' }
+                            ]);
+                        }, CONFIG.typingDelay);
+                    }, 500);
+                }, CONFIG.typingDelay);
+                return;
+            }
+
+            submitContactData();
+        }
+
+        function selectContactMethod(method) {
+            const labels = {
+                'email': 'Email me with information',
+                'call': 'Call me to discuss',
+                'schedule': 'Schedule a meeting'
+            };
+
+            addUserMessage(labels[method]);
+            state.userData.contactMethod = method;
+
+            if (method === 'schedule') {
+                showCalendly();
+            } else {
+                submitContactData();
+            }
+        }
+
+        function showCalendly() {
+            disableInput();
+            
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+                addBotMessage('Perfect! Let me open our scheduling calendar for you.');
+                
+                sendToN8N(CONFIG.webhooks[state.currentFlow], state.userData);
+
+                const chatBody = document.getElementById('chatbotBody');
+                const calendlyHTML = `
+                    <div class="message bot">
+                        <div class="message-bubble" style="max-width: 95%; padding: 6px;">
+                            <div class="calendly-embed" id="calendlyEmbed"></div>
+                        </div>
+                    </div>
+                `;
+                chatBody.insertAdjacentHTML('beforeend', calendlyHTML);
+                scrollToBottom();
+
+                Calendly.initInlineWidget({
+                    url: CONFIG.calendlyUrl,
+                    parentElement: document.getElementById('calendlyEmbed'),
+                    prefill: {
+                        name: state.userData.name,
+                        email: state.userData.email
+                    },
+                    styles: {
+                        height: '400px'
+                    }
+                });
+
+                setTimeout(() => {
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        hideTypingIndicator();
+                        addInfoBox('What happens next?', 
+                            '<p>After booking, you\'ll receive a confirmation email with meeting details and a calendar invitation.</p>'
+                        );
+                        
+                        addBotMessage('Once you\'ve scheduled your meeting, let me know!', true, [
+                            { text: "I've scheduled my meeting", action: "confirmScheduled()", icon: 'fa-check' }
+                        ]);
+                    }, CONFIG.typingDelay);
+                }, 1000);
+            }, CONFIG.typingDelay);
+        }
+
+        function confirmScheduled() {
+            addUserMessage("I've scheduled my meeting");
+            state.userData.meetingScheduled = true;
+            
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+                showFinalMessage(state.currentFlow + '-scheduled');
+            }, CONFIG.typingDelay);
+        }
+
+        async function submitContactData() {
+            disableInput();
+            
+            showTypingIndicator();
+            
+            let webhook = CONFIG.webhooks[state.currentFlow];
+            
+            await sendToN8N(webhook, state.userData);
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                showFinalMessage(state.currentFlow);
+            }, CONFIG.typingDelay * 2);
+        }
+
+        function showFinalMessage(flowType) {
+            showModeIndicator(false);
+            updateHeaderStatus('Online • Ready to help');
+            
+            const userName = state.userData.name ? state.userData.name.split(' ')[0] : 'there';
+            let infoTitle = 'What happens next?';
+            let infoContent = '';
+
+            switch(flowType) {
+                case 'existing-client':
+                    addBotMessage(`Thank you, <strong>${userName}</strong>. We've received your request and will be in touch shortly.`);
+                    infoContent = '<p>You can expect to hear from us within <strong>1 business day</strong>. If your matter is urgent, please call us directly at <strong>020 7189 2400</strong>.</p>';
+                    break;
+
+                case 'prospective-client':
+                    addBotMessage(`Thank you, <strong>${userName}</strong>! We're excited to potentially work with you.`);
+                    const teamInfo = state.userData.routeTo === 'CAT' 
+                        ? 'assign a dedicated relationship manager from our Centralized Relationship Team who will' 
+                        : 'have someone from our team';
+                    infoContent = `<p>Based on your investment profile, we'll ${teamInfo} contact you via your preferred method within <strong>2 business days</strong>.</p>`;
+                    break;
+
+                case 'prospective-client-scheduled':
+                    addBotMessage('Perfect! Your consultation is confirmed.');
+                    infoTitle = 'Before your meeting';
+                    infoContent = `
+                        <ul>
+                            <li>You'll receive a calendar invitation and reminder</li>
+                            <li>Feel free to prepare any questions you'd like to discuss</li>
+                            <li>We'll send you helpful information about our services</li>
+                        </ul>
+                    `;
+                    break;
+
+                case 'careers':
+                    addBotMessage(`Thank you, <strong>${userName}</strong>! We appreciate your interest in joining Evelyn Partners.`);
+                    infoContent = '<p>Our HR team will review your information and contact you if there\'s a suitable opportunity.</p>';
+                    break;
+
+                case 'press':
+                    addBotMessage(`Thank you, <strong>${userName}</strong>. Your press enquiry has been received.`);
+                    infoContent = '<p>Our press team will review your enquiry and respond as quickly as possible, typically within <strong>4 business hours</strong> during office hours.</p>';
+                    break;
+
+                case 'general':
+                    addBotMessage(`Thank you, <strong>${userName}</strong>. We've received your enquiry.`);
+                    infoContent = '<p>Someone from our team will review your enquiry and respond within <strong>2 business days</strong>.</p>';
+                    break;
+
+                case 'inheritance':
+                    addBotMessage(`Thank you, <strong>${userName}</strong>. We understand this is a sensitive time.`);
+                    infoContent = '<p>A member of our bereavement services team will contact you within <strong>1 business day</strong>.</p>';
+                    break;
+            }
+
+            setTimeout(() => {
+                addSuccessMessage('Your information has been successfully submitted.');
+                
+                setTimeout(() => {
+                    addInfoBox(infoTitle, infoContent);
+                    
+                    setTimeout(() => {
+                        // Reset state for potential new interactions
+                        state.currentFlow = null;
+                        state.userData = {};
+                        state.currentStep = 0;
+                        
+                        addBotMessage('Is there anything else I can help you with?', true, [
+                            { text: 'Ask a question', action: 'enableQAMode()', icon: 'fa-question-circle' },
+                            { text: 'Submit another enquiry', action: 'showContactOptions()', icon: 'fa-envelope', secondary: true }
+                        ], { horizontal: true });
+                        
+                        enableInput();
+                        setInputPlaceholder('Ask a question or type your message...');
+                        state.mode = 'qa';
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+
+        // ===== EVENT LISTENERS =====
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+    </script>
+</body>
+</html>
